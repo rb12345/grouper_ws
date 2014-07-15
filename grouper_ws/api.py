@@ -18,6 +18,16 @@ DEFAULT_SUBJECT_ATTRIBUTES = [
 
 logger = logging.getLogger(__name__)
 
+def bool_to_tf_str(b):
+    if b:
+        return 'T'
+    return 'F'
+
+def tf_str_to_bool(s):
+    if s == 'T':
+        return True
+    return False
+
 
 class Grouper(object):
     def __init__(self, host_name, base_url, auth=HTTPNegotiateAuth()):
@@ -42,7 +52,7 @@ class Grouper(object):
         )
         return http_response.json()
 
-    def add_members(self, group, members):
+    def add_members(self, group, members, replace_existing=False):
         url = 'servicesRest/v2_1_005/groups/{0}/members'.format(quote(group))
         members_list = [{
             'subjectId': member,
@@ -54,7 +64,7 @@ class Grouper(object):
         data = {
             'WsRestAddMemberRequest': {
                 'actAsSubjectLookup': {'subjectId': self.username},
-                'replaceAllExisting': 'F',
+                'replaceAllExisting': bool_to_tf_str(replace_existing),
                 'subjectLookups': members_list,
             },
         }
