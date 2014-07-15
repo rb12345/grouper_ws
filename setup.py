@@ -1,4 +1,7 @@
-from distutils.core import setup
+try:
+    from setuptools import setup
+except ImportError:
+    from distutils.core import setup
 
 
 # Idea borrowed from http://cburgmer.posterous.com/pip-requirementstxt-and-setuppy
@@ -20,13 +23,13 @@ setup(
     url='https://github.com/rb12345/grouper_ws',
     long_description=open('README.rst').read(),
     classifiers=['Development Status :: 4 - Beta',
-                 'Framework :: Django',
                  'License :: OSI Approved :: BSD License',
                  'Natural Language :: English',
                  'Operating System :: OS Independent',
                  'Programming Language :: Python',
                  'Topic :: Internet :: WWW/HTTP :: Dynamic Content'],
-    packages=('grouper_ws'),
+    packages=['grouper_ws'],
+    package_dir={'grouper_ws': 'grouper_ws'},
     install_requires=install_requires,
     dependency_links=dependency_links,
 )
