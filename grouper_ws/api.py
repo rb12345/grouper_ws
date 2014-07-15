@@ -81,6 +81,7 @@ class Grouper(object):
             'WsRestFindGroupsRequest': {
                 'actAsSubjectLookup': {'subjectId': self.username},
                 'wsGroupLookups': group_list,
+                'includeGroupDetail': 'T',
             },
         }
         print json.dumps(data, indent=2)
@@ -141,6 +142,21 @@ class Grouper(object):
         }
         print json.dumps(data, indent=2)
         response = self.request(requests.post, url, data)
+        print json.dumps(response, indent=2)
+        return response
+
+    def save_groups(self, groups):
+        url = 'servicesRest/v2_1_005/groups'
+
+        data = {
+            'WsRestGroupSaveRequest': {
+                'actAsSubjectLookup': {'subjectId': self.username},
+                'includeGroupDetail': 'T',
+                'wsGroupToSaves': groups,
+            },
+        }
+        print json.dumps(data, indent=2)
+        response = self.request(requests.put, url, data)
         print json.dumps(response, indent=2)
         return response
 
