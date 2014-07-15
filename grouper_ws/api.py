@@ -1,6 +1,7 @@
 import base64
 import json
 import requests
+import logging
 from requests_negotiate import HTTPNegotiateAuth
 from urlparse import urljoin
 from urllib import quote
@@ -14,6 +15,8 @@ DEFAULT_SUBJECT_ATTRIBUTES = [
     "oakoxfordssousername",
     "name"
 ]
+
+logger = logging.getLogger(__name__)
 
 
 class Grouper(object):
@@ -55,9 +58,9 @@ class Grouper(object):
                 'subjectLookups': members_list,
             },
         }
-        print json.dumps(data, indent=2)
+        logger.debug(json.dumps(data, indent=2))
         response = self.request(requests.put, url, data)
-        print json.dumps(response, indent=2)
+        logger.debug(json.dumps(response, indent=2))
         return response
 
     def find_groups(self, query):
@@ -69,9 +72,9 @@ class Grouper(object):
                 'wsQueryFilter': query.to_json_dict(),
             },
         }
-        print json.dumps(data, indent=2)
+        logger.debug(json.dumps(data, indent=2))
         response = self.request(requests.post, url, data)
-        print json.dumps(response, indent=2)
+        logger.debug(json.dumps(response, indent=2))
         return response
 
     def lookup_groups(self, groups):
@@ -85,9 +88,9 @@ class Grouper(object):
                 'includeGroupDetail': 'T',
             },
         }
-        print json.dumps(data, indent=2)
+        logger.debug(json.dumps(data, indent=2))
         response = self.request(requests.post, url, data)
-        print json.dumps(response, indent=2)
+        logger.debug(json.dumps(response, indent=2))
         return response
 
     def has_members(self, group, members):
@@ -105,9 +108,9 @@ class Grouper(object):
                 'subjectLookups': members_list,
             },
         }
-        print json.dumps(data, indent=2)
+        logger.debug(json.dumps(data, indent=2))
         response = self.request(requests.put, url, data)
-        print json.dumps(response, indent=2)
+        logger.debug(json.dumps(response, indent=2))
         return response
 
     def get_members(self, groups, subject_attributes=DEFAULT_SUBJECT_ATTRIBUTES):
@@ -121,9 +124,9 @@ class Grouper(object):
                 'wsGroupLookups': group_list,
             },
         }
-        print json.dumps(data, indent=2)
+        logger.debug(json.dumps(data, indent=2))
         response = self.request(requests.post, url, data)
-        print json.dumps(response, indent=2)
+        logger.debug(json.dumps(response, indent=2))
         return response
 
     def get_group_memberships(self, group, member_filter='All', subject_attributes=DEFAULT_SUBJECT_ATTRIBUTES):
@@ -141,9 +144,9 @@ class Grouper(object):
                 'includeSubjectDetail': 'T',
             },
         }
-        print json.dumps(data, indent=2)
+        logger.debug(json.dumps(data, indent=2))
         response = self.request(requests.post, url, data)
-        print json.dumps(response, indent=2)
+        logger.debug(json.dumps(response, indent=2))
         return response
 
     def save_groups(self, groups):
@@ -164,24 +167,8 @@ class Grouper(object):
                 'wsGroupToSaves': [g.to_json_dict() for g in groups],
             },
         }
-        print json.dumps(data, indent=2)
+        logger.debug(json.dumps(data, indent=2))
         response = self.request(requests.put, url, data)
-        print json.dumps(response, indent=2)
+        logger.debug(json.dumps(response, indent=2))
         return response
 
-
-if __name__ == '__main__':
-    import httplib
-    import sys
-
-    try:
-        host_name = sys.argv[1]
-    except IndexError:
-        sys.stderr.write('You must supply a hostname as a first parameter.\n')
-        sys.exit(1)
-    # '/ws/' is the path on the server where the web services live.
-    grouper = Grouper(host_name, '/ws/')
-
-    potential_members = [
-    ]
-    grouper.add_members('profiling:in-out', potential_members)
