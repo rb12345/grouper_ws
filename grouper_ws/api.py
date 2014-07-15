@@ -35,6 +35,7 @@ class Grouper(object):
         self.base_url = urljoin('https://' + self.host_name, base_url)
         self.username = "cud/arbitrary.it.ox.ac.uk@OX.AC.UK"
         self.auth = auth
+        self.__session = requests.Session()
 
     def request(self, method, url, data):
         """
@@ -69,7 +70,7 @@ class Grouper(object):
             },
         }
         logger.debug(json.dumps(data, indent=2))
-        response = self.request(requests.put, url, data)
+        response = self.request(self.__session.put, url, data)
         logger.debug(json.dumps(response, indent=2))
         return response
 
@@ -83,7 +84,7 @@ class Grouper(object):
             },
         }
         logger.debug(json.dumps(data, indent=2))
-        response = self.request(requests.post, url, data)
+        response = self.request(self.__session.post, url, data)
         logger.debug(json.dumps(response, indent=2))
         return response
 
@@ -99,7 +100,7 @@ class Grouper(object):
             },
         }
         logger.debug(json.dumps(data, indent=2))
-        response = self.request(requests.post, url, data)
+        response = self.request(self.__session.post, url, data)
         logger.debug(json.dumps(response, indent=2))
         return response
 
@@ -119,7 +120,7 @@ class Grouper(object):
             },
         }
         logger.debug(json.dumps(data, indent=2))
-        response = self.request(requests.put, url, data)
+        response = self.request(self.__session.put, url, data)
         logger.debug(json.dumps(response, indent=2))
         return response
 
@@ -135,7 +136,7 @@ class Grouper(object):
             },
         }
         logger.debug(json.dumps(data, indent=2))
-        response = self.request(requests.post, url, data)
+        response = self.request(self.__session.post, url, data)
         logger.debug(json.dumps(response, indent=2))
         return response
 
@@ -155,7 +156,7 @@ class Grouper(object):
             },
         }
         logger.debug(json.dumps(data, indent=2))
-        response = self.request(requests.post, url, data)
+        response = self.request(self.__session.post, url, data)
         logger.debug(json.dumps(response, indent=2))
         return response
 
@@ -178,7 +179,7 @@ class Grouper(object):
             },
         }
         logger.debug(json.dumps(data, indent=2))
-        response = self.request(requests.put, url, data)
+        response = self.request(self.__session.put, url, data)
         logger.debug(json.dumps(response, indent=2))
         return response
 

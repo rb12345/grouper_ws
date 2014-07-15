@@ -6,9 +6,12 @@ from datetime import datetime
 
 
 class Group(object):
-    def __init__(self, group_name, details={}, *args, **kwargs):
+    def __init__(self, group_name, details={}, description=None, *args, **kwargs):
         super(Group, self).__init__(*args, **kwargs)
         self.group_name = group_name
+        self.description = group_name
+        if description is not None:
+            self.description = description
         self.group_type = "group"
         self.__details = details
 
@@ -33,6 +36,7 @@ class Group(object):
     def to_json_dict(self, include_details=True):
         wsGroup = {
             'name': self.group_name,
+            'description': self.description,
         }
         if include_details:
             wsGroup['detail'] = self.get_details()
