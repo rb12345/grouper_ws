@@ -5,6 +5,7 @@ from requests_negotiate import HTTPNegotiateAuth
 from urlparse import urljoin
 from urllib import quote
 from queries import *
+from groups import *
 
 
 DEFAULT_SUBJECT_ATTRIBUTES = [
@@ -148,11 +149,19 @@ class Grouper(object):
     def save_groups(self, groups):
         url = 'servicesRest/v2_1_005/groups'
 
+        def str_to_group(group):
+            if isinstance(group, Group):
+                return group
+            else:
+                return Group(str(group))
+
+        groups = [str_to_group(group) for group in groups]
+
         data = {
             'WsRestGroupSaveRequest': {
                 'actAsSubjectLookup': {'subjectId': self.username},
                 'includeGroupDetail': 'T',
-                'wsGroupToSaves': groups,
+                'wsGroupToSaves': [g.to_json_dict() for g in groups],
             },
         }
         print json.dumps(data, indent=2)
