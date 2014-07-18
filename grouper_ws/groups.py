@@ -9,7 +9,7 @@ class Group(object):
     def __init__(self, group_name, details={}, display_name=None, *args, **kwargs):
         super(Group, self).__init__(*args, **kwargs)
         self.group_name = group_name
-        self.display_name = group_name
+        self.display_name = group_name.split(':')[-1]
         if display_name is not None:
             self.display_name = display_name
         self.group_type = "group"
