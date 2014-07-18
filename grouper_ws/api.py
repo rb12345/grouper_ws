@@ -183,3 +183,23 @@ class Grouper(object):
         logger.debug(json.dumps(response, indent=2))
         return response
 
+    def save_stems(self, stems):
+        url = 'servicesRest/v2_1_005/stems'
+
+        stems = [{
+            'wsStem': {'name': stem},
+            'wsStemLookup': {'stemName': stem},
+            'createParentStemsIfNotExist': 'T',
+        } for stem in stems]
+
+        data = {
+            'WsRestStemSaveRequest': {
+                'actAsSubjectLookup': {'subjectId': self.username},
+                'wsStemToSaves': [s for s in stems],
+            },
+        }
+        logger.debug(json.dumps(data, indent=2))
+        response = self.request(self.__session.put, url, data)
+        logger.debug(json.dumps(response, indent=2))
+        return response
+

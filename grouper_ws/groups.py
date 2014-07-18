@@ -33,6 +33,9 @@ class Group(object):
             return datetime.min
         return datetime.strptime(self.__details['createTime'], '%Y/%m/%d %H:%M:%S.%f')
 
+    def uuid(self):
+        return self.__details.get('uuid', None)
+
     def to_json_dict(self, include_details=True):
         wsGroup = {
             'name': self.group_name,
@@ -44,7 +47,8 @@ class Group(object):
             'wsGroup': wsGroup,
             'wsGroupLookup': {
                 'groupName': self.group_name,
-            }
+            },
+            'createParentStemsIfNotExist': 'T',
         }
 
     def __str__(self):
