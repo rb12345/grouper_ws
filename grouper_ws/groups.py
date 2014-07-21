@@ -95,9 +95,9 @@ def group_from_json_dict(json_dict):
     # Extract wsGroup if present, otherwise assume we have group data
     json_dict = json_dict.get('wsGroup', json_dict)
     group_name = json_dict['name']
-    group = Group(group_name)
-
     details = json_dict.get('detail', {})
+    group = Group(group_name, details)
+
     composite = details.get('hasComposite', 'F')
     if composite == 'T':
         # Extract left/right group
