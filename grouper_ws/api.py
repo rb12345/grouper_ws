@@ -7,6 +7,7 @@ from urlparse import urljoin
 from urllib import quote
 from queries import *
 from groups import *
+from stems import *
 
 
 DEFAULT_SUBJECT_ATTRIBUTES = [
@@ -192,16 +193,18 @@ class Grouper(object):
     def save_stems(self, stems):
         url = 'servicesRest/v2_1_005/stems'
 
-        stems = [{
-            'wsStem': {'name': stem},
-            'wsStemLookup': {'stemName': stem},
-            'createParentStemsIfNotExist': 'T',
-        } for stem in stems]
+        def str_to_stem(stem):
+            if isinstance(stem, Stem):
+                return stem
+            else:
+                return Stem(str(stem))
+
+        stems = [str_to_stem(stem) for stem in stems]
 
         data = {
             'WsRestStemSaveRequest': {
                 'actAsSubjectLookup': {'subjectId': self.username},
-                'wsStemToSaves': [s for s in stems],
+                'wsStemToSaves': [s.to_json_dict() for s in stems],
             },
         }
         logger.debug(json.dumps(data, indent=2))
