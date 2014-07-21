@@ -212,3 +212,48 @@ class Grouper(object):
         logger.debug(json.dumps(response, indent=2))
         return response
 
+    def delete_groups(self, groups):
+        url = 'servicesRest/v2_1_005/groups'
+
+        def str_to_group(group):
+            if isinstance(group, Group):
+                return group
+            else:
+                return Group(str(group))
+
+        groups = [str_to_group(group) for group in groups]
+
+        data = {
+            'WsRestGroupDeleteRequest': {
+                'actAsSubjectLookup': {'subjectId': self.username},
+                'includeGroupDetail': 'T',
+                'wsGroupLookups': [g.get_group_lookup() for g in groups],
+            },
+        }
+        logger.debug(json.dumps(data, indent=2))
+        response = self.request(self.__session.post, url, data)
+        logger.debug(json.dumps(response, indent=2))
+        return response
+
+    def delete_stems(self, stems):
+        url = 'servicesRest/v2_1_005/stems'
+
+        def str_to_stem(stem):
+            if isinstance(stem, Stem):
+                return stem
+            else:
+                return Stem(str(stem))
+
+        stems = [str_to_stem(stem) for stem in stems]
+
+        data = {
+            'WsRestStemDeleteRequest': {
+                'actAsSubjectLookup': {'subjectId': self.username},
+                'wsStemLookups': [s.get_stem_lookup() for s in stems],
+            },
+        }
+        logger.debug(json.dumps(data, indent=2))
+        response = self.request(self.__session.post, url, data)
+        logger.debug(json.dumps(response, indent=2))
+        return response
+

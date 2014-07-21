@@ -25,10 +25,13 @@ class Stem(object):
         }
         return {
             'wsStem': wsStem,
-            'wsStemLookup': {
-                'stemName': self.stem_name,
-            },
+            'wsStemLookup': self.get_stem_lookup(),
             'createParentStemsIfNotExist': 'T',
+        }
+
+    def get_stem_lookup(self):
+        return {
+            'stemName': self.stem_name,
         }
 
     def __str__(self):

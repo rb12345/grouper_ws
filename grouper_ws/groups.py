@@ -45,10 +45,13 @@ class Group(object):
             wsGroup['detail'] = self.get_details()
         return {
             'wsGroup': wsGroup,
-            'wsGroupLookup': {
-                'groupName': self.group_name,
-            },
+            'wsGroupLookup': self.get_group_lookup(),
             'createParentStemsIfNotExist': 'T',
+        }
+
+    def get_group_lookup(self):
+        return {
+            'groupName': self.group_name,
         }
 
     def __str__(self):
