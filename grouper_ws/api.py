@@ -34,7 +34,6 @@ class Grouper(object):
     def __init__(self, host_name, base_url, auth=HTTPNegotiateAuth()):
         self.host_name = host_name
         self.base_url = urljoin('https://' + self.host_name, base_url)
-        self.username = "cud/arbitrary.it.ox.ac.uk@OX.AC.UK"
         self.auth = auth
         self.__session = requests.Session()
 
@@ -71,7 +70,7 @@ class Grouper(object):
 
         data = {
             'WsRestAddMemberRequest': {
-                'actAsSubjectLookup': {'subjectId': self.username},
+                'actAsSubjectLookup': {'subjectId': self.auth.username},
                 'replaceAllExisting': bool_to_tf_str(replace_existing),
                 'subjectLookups': members_list,
             },
@@ -86,7 +85,7 @@ class Grouper(object):
 
         data = {
             'WsRestFindGroupsRequest': {
-                'actAsSubjectLookup': {'subjectId': self.username},
+                'actAsSubjectLookup': {'subjectId': self.auth.username},
                 'wsQueryFilter': query.to_json_dict(),
             },
         }
@@ -101,7 +100,7 @@ class Grouper(object):
 
         data = {
             'WsRestFindGroupsRequest': {
-                'actAsSubjectLookup': {'subjectId': self.username},
+                'actAsSubjectLookup': {'subjectId': self.auth.username},
                 'wsGroupLookups': group_list,
                 'includeGroupDetail': 'T',
             },
@@ -122,7 +121,7 @@ class Grouper(object):
 
         data = {
             'WsRestHasMemberRequest': {
-                'actAsSubjectLookup': {'subjectId': self.username},
+                'actAsSubjectLookup': {'subjectId': self.auth.username},
                 'subjectLookups': members_list,
             },
         }
@@ -137,7 +136,7 @@ class Grouper(object):
 
         data = {
             'WsRestGetMembersRequest': {
-                'actAsSubjectLookup': {'subjectId': self.username},
+                'actAsSubjectLookup': {'subjectId': self.auth.username},
                 'subjectAttributeNames': subject_attributes,
                 'wsGroupLookups': group_list,
             },
@@ -155,7 +154,7 @@ class Grouper(object):
 
         data = {
             'WsRestGetMembershipsRequest': {
-                'actAsSubjectLookup': {'subjectId': self.username},
+                'actAsSubjectLookup': {'subjectId': self.auth.username},
                 'subjectAttributeNames': subject_attributes,
                 #'memberFilter': 'All',
                 'includeGroupDetail': 'T',
@@ -180,7 +179,7 @@ class Grouper(object):
 
         data = {
             'WsRestGroupSaveRequest': {
-                'actAsSubjectLookup': {'subjectId': self.username},
+                'actAsSubjectLookup': {'subjectId': self.auth.username},
                 'includeGroupDetail': 'T',
                 'wsGroupToSaves': [g.to_json_dict() for g in groups],
             },
@@ -203,7 +202,7 @@ class Grouper(object):
 
         data = {
             'WsRestStemSaveRequest': {
-                'actAsSubjectLookup': {'subjectId': self.username},
+                'actAsSubjectLookup': {'subjectId': self.auth.username},
                 'wsStemToSaves': [s.to_json_dict() for s in stems],
             },
         }
