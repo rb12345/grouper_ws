@@ -112,12 +112,18 @@ class Grouper(object):
 
     def has_members(self, group, members):
         url = 'servicesRest/v2_1_005/groups/{0}/members'.format(quote(group))
-        members_list = [{
-            'subjectId': member,
+        members_list = []
 
-            # Skip lookup of Kerberos credentials
-            'subjectSourceId': 'OAK',
-        } for member in members]
+        for member in members:
+            if type(member) == str or type(member) == unicode:
+                members_list.append({
+                'subjectId': member,
+                })
+            elif type(member) == tuple:
+                members_list.append({
+                    'subjectId': member[0],
+                    'subjectSourceId': member[1],
+                    })
 
         data = {
             'WsRestHasMemberRequest': {
