@@ -156,7 +156,7 @@ class Grouper(object):
             'WsRestGetMembershipsRequest': {
                 'actAsSubjectLookup': {'subjectId': self.auth.username},
                 'subjectAttributeNames': subject_attributes,
-                #'memberFilter': 'All',
+                'memberFilter': 'All',
                 'includeGroupDetail': 'T',
                 'includeSubjectDetail': 'T',
             },
