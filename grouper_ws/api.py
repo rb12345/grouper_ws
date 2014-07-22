@@ -277,8 +277,8 @@ class Grouper(object):
         logger.debug(json.dumps(response, indent=2))
         return response
 
-    def assign_privileges(self, privilege_type, privilege_names,
-                          stems=None, groups=None, members=None):
+    def assign_privileges(self, privilege_type, privilege_names, allowed=True,
+                          stem=None, group=None, members=None):
         url = 'servicesRest/v2_1_005/grouperPrivileges'
 
         data = {
@@ -286,6 +286,7 @@ class Grouper(object):
                 'actAsSubjectLookup': {'subjectId': self.auth.username},
                 'includeGroupDetail': 'T',
                 'includeSubjectDetail': 'T',
+                'allowed': bool_to_tf_str(allowed),
             },
         }
         params = {}
@@ -294,15 +295,14 @@ class Grouper(object):
             members_list = [member_to_subject_lookup(member) for member in members]
             params['wsSubjectLookups'] = members_list
         
-        if stems is not None:
-            stems = [str_to_stem(stem) for stem in stems]
-            params['wsStemLookups'] = [s.get_stem_lookup() for s in stems]
+        if stem is not None:
+            stem = str_to_stem(stem)
+            params['wsStemLookup'] = stem.get_stem_lookup()
+        elif group is not None:
+            groups = str_to_group(group)
+            params['wsGroupLookup'] = g.get_group_lookup()
 
-        if groups is not None:
-            groups = [str_to_group(group) for group in groups]
-            params['wsGroupLookups'] = [g.get_group_lookup() for g in groups]
-
-        if members is None and stems is None and groups is None:
+        if members is None and stem is None and group is None:
             raise Exception("assign_privileges(): No stem, group or subject specified!")
 
         params['privilegeNames'] = privilege_names
