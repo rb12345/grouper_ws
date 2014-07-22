@@ -295,9 +295,11 @@ class Grouper(object):
             params['wsSubjectLookups'] = members_list
         
         if stems is not None:
+            stems = [str_to_stem(stem) for stem in stems]
             params['wsStemLookups'] = [s.get_stem_lookup() for s in stems]
 
         if groups is not None:
+            groups = [str_to_group(group) for group in groups]
             params['wsGroupLookups'] = [g.get_group_lookup() for g in groups]
 
         if members is None and stems is None and groups is None:
