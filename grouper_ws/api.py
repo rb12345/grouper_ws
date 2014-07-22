@@ -29,6 +29,18 @@ def tf_str_to_bool(s):
         return True
     return False
 
+def member_to_subject_lookup(member):
+    if type(member) == str or type(member) == unicode:
+        return {
+        'subjectId': member,
+        }
+    elif type(member) == tuple:
+        return {
+            'subjectId': member[0],
+            'subjectSourceId': member[1],
+        }
+    raise Exception("member_to_subject_lookup(): Invalid member value")
+
 
 class Grouper(object):
     def __init__(self, host_name, base_url, auth=HTTPNegotiateAuth()):
@@ -55,18 +67,8 @@ class Grouper(object):
 
     def add_members(self, group, members, replace_existing=False):
         url = 'servicesRest/v2_1_005/groups/{0}/members'.format(quote(group))
-        members_list = []
 
-        for member in members:
-            if type(member) == str or type(member) == unicode:
-                members_list.append({
-                'subjectId': member,
-                })
-            elif type(member) == tuple:
-                members_list.append({
-                    'subjectId': member[0],
-                    'subjectSourceId': member[1],
-                    })
+        members_list = [member_to_subject_lookup(member) for member in members]
 
         data = {
             'WsRestAddMemberRequest': {
@@ -112,18 +114,8 @@ class Grouper(object):
 
     def has_members(self, group, members):
         url = 'servicesRest/v2_1_005/groups/{0}/members'.format(quote(group))
-        members_list = []
 
-        for member in members:
-            if type(member) == str or type(member) == unicode:
-                members_list.append({
-                'subjectId': member,
-                })
-            elif type(member) == tuple:
-                members_list.append({
-                    'subjectId': member[0],
-                    'subjectSourceId': member[1],
-                    })
+        members_list = [member_to_subject_lookup(member) for member in members]
 
         data = {
             'WsRestHasMemberRequest': {
