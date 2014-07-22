@@ -242,8 +242,8 @@ class Grouper(object):
         logger.debug(json.dumps(response, indent=2))
         return response
 
-    def get_privileges(self, stem=None, group=None, member=None,
-                       privilege_type=None, privilege_name=None):
+    def get_privileges(self, privilege_type=None, privilege_name=None,
+                       stem=None, group=None, member=None):
         url = 'servicesRest/v2_1_005/grouperPrivileges'
 
         # Why is it that this is "Lite" only?
@@ -271,6 +271,42 @@ class Grouper(object):
             params['privilegeType'] = privilege_type
 
         data['WsRestGetGrouperPrivilegesLiteRequest'].update(params)
+
+        logger.debug(json.dumps(data, indent=2))
+        response = self.request(self._session.post, url, data)
+        logger.debug(json.dumps(response, indent=2))
+        return response
+
+    def assign_privileges(self, privilege_type, privilege_names,
+                          stems=None, groups=None, members=None):
+        url = 'servicesRest/v2_1_005/grouperPrivileges'
+
+        data = {
+            'WsRestAssignGrouperPrivilegesRequest': {
+                'actAsSubjectLookup': {'subjectId': self.username},
+                'includeGroupDetail': 'T',
+                'includeSubjectDetail': 'T',
+            },
+        }
+        params = {}
+
+        if members is not None:
+            members_list = [member_to_subject_lookup(member) for member in members]
+            params['wsSubjectLookups'] = members_list
+        
+        if stems is not None:
+            params['wsStemLookups'] = [s.get_stem_lookup() for s in stems]
+
+        if groups is not None:
+            params['wsGroupLookups'] = [g.get_group_lookup() for g in groups]
+
+        if members is None and stems is None and groups is None:
+            raise Exception("assign_privileges(): No stem, group or subject specified!")
+
+        params['privilegeNames'] = privilege_names
+        params['privilegeType'] = privilege_type
+
+        data['WsRestAssignGrouperPrivilegesRequest'].update(params)
 
         logger.debug(json.dumps(data, indent=2))
         response = self.request(self._session.post, url, data)
