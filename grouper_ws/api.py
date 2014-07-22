@@ -300,7 +300,7 @@ class Grouper(object):
             params['wsStemLookup'] = stem.get_stem_lookup()
         elif group is not None:
             groups = str_to_group(group)
-            params['wsGroupLookup'] = g.get_group_lookup()
+            params['wsGroupLookup'] = group.get_group_lookup()
 
         if members is None and stem is None and group is None:
             raise Exception("assign_privileges(): No stem, group or subject specified!")
