@@ -41,6 +41,18 @@ def member_to_subject_lookup(member):
         }
     raise Exception("member_to_subject_lookup(): Invalid member value")
 
+def str_to_stem(stem):
+    if isinstance(stem, Stem):
+        return stem
+    else:
+        return Stem(str(stem))
+
+def str_to_group(group):
+    if isinstance(group, Group):
+        return group
+    else:
+        return Group(str(group))
+
 
 class Grouper(object):
     def __init__(self, host_name, base_url, auth=HTTPNegotiateAuth()):
@@ -167,12 +179,6 @@ class Grouper(object):
     def save_groups(self, groups):
         url = 'servicesRest/v2_1_005/groups'
 
-        def str_to_group(group):
-            if isinstance(group, Group):
-                return group
-            else:
-                return Group(str(group))
-
         groups = [str_to_group(group) for group in groups]
 
         data = {
@@ -190,12 +196,6 @@ class Grouper(object):
     def save_stems(self, stems):
         url = 'servicesRest/v2_1_005/stems'
 
-        def str_to_stem(stem):
-            if isinstance(stem, Stem):
-                return stem
-            else:
-                return Stem(str(stem))
-
         stems = [str_to_stem(stem) for stem in stems]
 
         data = {
@@ -211,12 +211,6 @@ class Grouper(object):
 
     def delete_groups(self, groups):
         url = 'servicesRest/v2_1_005/groups'
-
-        def str_to_group(group):
-            if isinstance(group, Group):
-                return group
-            else:
-                return Group(str(group))
 
         groups = [str_to_group(group) for group in groups]
 
@@ -234,12 +228,6 @@ class Grouper(object):
 
     def delete_stems(self, stems):
         url = 'servicesRest/v2_1_005/stems'
-
-        def str_to_stem(stem):
-            if isinstance(stem, Stem):
-                return stem
-            else:
-                return Stem(str(stem))
 
         stems = [str_to_stem(stem) for stem in stems]
 
