@@ -242,3 +242,37 @@ class Grouper(object):
         logger.debug(json.dumps(response, indent=2))
         return response
 
+    def get_privileges(self, stem=None, group=None, member=None,
+                       privilege_type=None, privilege_name=None):
+        url = 'servicesRest/v2_1_005/grouperPrivileges'
+
+        # Why is it that this is "Lite" only?
+        data = {
+            'WsRestGetGrouperPrivilegesLiteRequest': {
+                'actAsSubjectId': self.auth.username,
+            },
+        }
+        params = {}
+
+        if stem is not None:
+            params['stemName'] = str_to_stem(stem).stem_name
+
+        if group is not None:
+            params['groupName'] = str_to_group(group).group_name
+
+        if member is not None:
+            subject_lookup = member_to_subject_lookup(member)
+            params.update(subject_lookup)
+
+        if privilege_name is not None:
+            params['privilegeName'] = privilege_name
+
+        if privilege_type is not None:
+            params['privilegeType'] = privilege_type
+
+        data['WsRestGetGrouperPrivilegesLiteRequest'].update(params)
+
+        logger.debug(json.dumps(data, indent=2))
+        response = self.request(self._session.post, url, data)
+        logger.debug(json.dumps(response, indent=2))
+        return response
