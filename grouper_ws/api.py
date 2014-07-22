@@ -299,7 +299,7 @@ class Grouper(object):
             stem = str_to_stem(stem)
             params['wsStemLookup'] = stem.get_stem_lookup()
         elif group is not None:
-            groups = str_to_group(group)
+            group = str_to_group(group)
             params['wsGroupLookup'] = group.get_group_lookup()
 
         if members is None and stem is None and group is None:
