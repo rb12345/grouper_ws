@@ -216,7 +216,7 @@ class Grouper(object):
 
         data = {
             'WsRestGroupDeleteRequest': {
-                'actAsSubjectLookup': {'subjectId': self.username},
+                'actAsSubjectLookup': {'subjectId': self.auth.username},
                 'includeGroupDetail': 'T',
                 'wsGroupLookups': [g.get_group_lookup() for g in groups],
             },
@@ -233,7 +233,7 @@ class Grouper(object):
 
         data = {
             'WsRestStemDeleteRequest': {
-                'actAsSubjectLookup': {'subjectId': self.username},
+                'actAsSubjectLookup': {'subjectId': self.auth.username},
                 'wsStemLookups': [s.get_stem_lookup() for s in stems],
             },
         }
@@ -283,7 +283,7 @@ class Grouper(object):
 
         data = {
             'WsRestAssignGrouperPrivilegesRequest': {
-                'actAsSubjectLookup': {'subjectId': self.username},
+                'actAsSubjectLookup': {'subjectId': self.auth.username},
                 'includeGroupDetail': 'T',
                 'includeSubjectDetail': 'T',
             },
