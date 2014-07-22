@@ -13,10 +13,10 @@ class Stem(object):
         if display_name is not None:
             self.display_name = display_name
         self.stem_type = "stem"
-        self.__uuid = uuid
+        self._uuid = uuid
 
     def uuid(self):
-        return self.__uuid
+        return self._uuid
 
     def to_json_dict(self):
         wsStem = {

@@ -13,7 +13,7 @@ class Group(object):
         if display_name is not None:
             self.display_name = display_name
         self.group_type = "group"
-        self.__details = details
+        self._details = details
 
     def get_details(self):
         return {
@@ -24,17 +24,17 @@ class Group(object):
         return False
 
     def created(self):
-        if 'createTime' not in self.__details:
+        if 'createTime' not in self._details:
             return datetime.min
-        return datetime.strptime(self.__details['createTime'], '%Y/%m/%d %H:%M:%S.%f')
+        return datetime.strptime(self._details['createTime'], '%Y/%m/%d %H:%M:%S.%f')
 
     def modified(self):
-        if 'createTime' not in self.__details:
+        if 'createTime' not in self._details:
             return datetime.min
-        return datetime.strptime(self.__details['createTime'], '%Y/%m/%d %H:%M:%S.%f')
+        return datetime.strptime(self._details['createTime'], '%Y/%m/%d %H:%M:%S.%f')
 
     def uuid(self):
-        return self.__details.get('uuid', None)
+        return self._details.get('uuid', None)
 
     def to_json_dict(self, include_details=True):
         wsGroup = {
