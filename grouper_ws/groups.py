@@ -6,14 +6,18 @@ from datetime import datetime
 
 
 class Group(object):
-    def __init__(self, group_name, details={}, display_name=None, *args, **kwargs):
-        super(Group, self).__init__(*args, **kwargs)
+    def __init__(self, group_name, display_name=None, uuid=None,
+                 created_time=None, modified_time=None,
+                 *args, **kwargs):
         self.group_name = group_name
-        self.display_name = group_name.split(':')[-1]
+        self.extension = group_name.split(':')[-1]
+        self.display_name = self.extension
         if display_name is not None:
             self.display_name = display_name
         self.group_type = "group"
-        self._details = details
+        self.uuid = uuid
+        self._created_time = created_time
+        self._modified_time = modified_time
 
     def get_details(self):
         return {
@@ -24,17 +28,14 @@ class Group(object):
         return False
 
     def created(self):
-        if 'createTime' not in self._details:
+        if self._created_time is None:
             return datetime.min
         return datetime.strptime(self._details['createTime'], '%Y/%m/%d %H:%M:%S.%f')
 
     def modified(self):
-        if 'createTime' not in self._details:
+        if self._modified_time is None:
             return datetime.min
-        return datetime.strptime(self._details['createTime'], '%Y/%m/%d %H:%M:%S.%f')
-
-    def uuid(self):
-        return self._details.get('uuid', None)
+        return datetime.strptime(self._details['modifyTime'], '%Y/%m/%d %H:%M:%S.%f')
 
     def to_json_dict(self, include_details=True):
         wsGroup = {
@@ -99,7 +100,15 @@ def group_from_json_dict(json_dict):
     json_dict = json_dict.get('wsGroup', json_dict)
     group_name = json_dict['name']
     details = json_dict.get('detail', {})
-    group = Group(group_name, details)
+    uuid = json_dict.get('uuid', None)
+    created = details.get('createTime', None)
+    modified = details.get('modifyTime', None)
+    group = Group(
+        group_name,
+        uuid=uuid,
+        created_time=created,
+        modified_time=modified
+    )
 
     composite = details.get('hasComposite', 'F')
     if composite == 'T':
@@ -107,5 +116,13 @@ def group_from_json_dict(json_dict):
         left_group = group_from_json_dict(details.get('leftGroup', {}))
         right_group = group_from_json_dict(details.get('rightGroup', {}))
         composite_type = details.get('compositeType', None)
-        group = CompositeGroup(group_name, left_group, right_group, composite_type, details=details)
+        group = CompositeGroup(
+            group_name,
+            left_group,
+            right_group,
+            composite_type, 
+            uuid=uuid,
+            created_time=created,
+            modified_time=modified
+        )
     return group
