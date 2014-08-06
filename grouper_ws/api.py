@@ -278,7 +278,8 @@ class Grouper(object):
         return response
 
     def assign_privileges(self, privilege_type, privilege_names, allowed=True,
-                          stem=None, group=None, members=None):
+                          stem=None, group=None, members=None,
+                          replace_existing=False):
         url = 'servicesRest/v2_1_005/grouperPrivileges'
 
         data = {
@@ -307,6 +308,7 @@ class Grouper(object):
 
         params['privilegeNames'] = privilege_names
         params['privilegeType'] = privilege_type
+        params['replaceAllExisting'] = bool_to_tf_str(replace_existing)
 
         data['WsRestAssignGrouperPrivilegesRequest'].update(params)
 
