@@ -179,7 +179,11 @@ class Grouper(object):
         logger.debug(json.dumps(response, indent=2))
         return response
 
-    def get_memberships_for_subjects(self, members, member_filter='All', subject_attributes=DEFAULT_SUBJECT_ATTRIBUTES):
+    def get_memberships_for_subjects(
+        self, members, member_filter='All',
+        subject_attributes=DEFAULT_SUBJECT_ATTRIBUTES,
+        group_details=False
+    ):
         url = 'servicesRest/v2_1_005/memberships'
 
         members_list = [member_to_subject_lookup(member) for member in members]
@@ -192,7 +196,7 @@ class Grouper(object):
             'actAsSubjectLookup': {'subjectId': self.auth.username},
             'subjectAttributeNames': subject_attributes,
             'memberFilter': 'All',
-            'includeGroupDetail': 'T',
+            'includeGroupDetail': bool_to_tf_str(group_details),
             'includeSubjectDetail': 'T',
             'wsSubjectLookups': members_list,
         }
