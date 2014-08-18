@@ -8,6 +8,7 @@ from urllib import quote
 from queries import *
 from groups import *
 from stems import *
+from subjects import *
 
 
 DEFAULT_SUBJECT_ATTRIBUTES = [
@@ -39,6 +40,8 @@ def member_to_subject_lookup(member):
             'subjectId': member[0],
             'subjectSourceId': member[1],
         }
+    elif isinstance(member, Subject):
+        return member.get_subject_lookup()
     raise Exception("member_to_subject_lookup(): Invalid member value")
 
 def str_to_stem(stem):
@@ -170,6 +173,31 @@ class Grouper(object):
                 'includeGroupDetail': 'T',
                 'includeSubjectDetail': 'T',
             },
+        }
+        logger.debug(json.dumps(data, indent=2))
+        response = self.request(self._session.post, url, data)
+        logger.debug(json.dumps(response, indent=2))
+        return response
+
+    def get_memberships_for_subjects(self, members, member_filter='All', subject_attributes=DEFAULT_SUBJECT_ATTRIBUTES):
+        url = 'servicesRest/v2_1_005/memberships'
+
+        members_list = [member_to_subject_lookup(member) for member in members]
+
+        member_filter_values = ['All', 'Effective', 'Immediate', 'Composite', 'NonImmediate']
+        if member_filter not in member_filter_values:
+            raise Exception("member_filter must be in '{0}'".format(member_filter_values))
+
+        params = {
+            'actAsSubjectLookup': {'subjectId': self.auth.username},
+            'subjectAttributeNames': subject_attributes,
+            'memberFilter': 'All',
+            'includeGroupDetail': 'T',
+            'includeSubjectDetail': 'T',
+            'wsSubjectLookups': members_list,
+        }
+        data = {
+            'WsRestGetMembershipsRequest': params,
         }
         logger.debug(json.dumps(data, indent=2))
         response = self.request(self._session.post, url, data)
