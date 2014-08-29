@@ -348,3 +348,76 @@ class Grouper(object):
         response = self.request(self._session.post, url, data)
         logger.debug(json.dumps(response, indent=2))
         return response
+
+    def assign_attributes(self, stems=None, groups=None, attributes={},
+                          attr_op='assign_attr', attr_value_op='assign_value'):
+        """
+        Assign attribute/value pairs to a list of stems or groups.
+        """
+        url = 'servicesRest/v2_1_005/attributeAssignments'
+
+        if attr_op not in ['assign_attr', 'add_attr', 'remove_attr']:
+            raise Exception("Unknown attribute assign operation")
+        if attr_value_op not in ['assign_value', 'add_value', 'remove_value', 'replace_values']:
+            raise Exception("Unknown attribute value assign operation")
+        data = {
+            'WsRestAssignAttributesRequest': {
+                'actAsSubjectLookup': {'subjectId': self.auth.username},
+                'attributeAssignOperation': attr_op,
+                'attributeAssignValueOperation': attr_value_op,
+                'wsAttributeDefNameLookups': [
+                    {'name': attr} for attr in attributes
+                ],
+                'values': [
+                    {'valueSystem': attributes[attr]} for attr in attributes
+                ],
+            },
+        }
+        params = {}
+
+        if stems is not None:
+            stems = [str_to_stem(stem).get_stem_lookup() for stem in stems]
+            params['wsOwnerStemLookups'] = stems
+            params['attributeAssignType'] = 'stem'
+        elif groups is not None:
+            groups = [str_to_group(group) for group in groups]
+            params['wsOwnerGroupLookups'] = [group.get_group_lookup() for group in groups]
+            params['attributeAssignType'] = 'group'
+
+        data['WsRestAssignAttributesRequest'].update(params)
+
+        logger.debug(json.dumps(data, indent=2))
+        response = self.request(self._session.post, url, data)
+        logger.debug(json.dumps(response, indent=2))
+        return response
+
+    def get_attribute_assignments(self, stems=None, groups=None, attributes=None):
+        url = 'servicesRest/v2_1_005/attributeAssignments'
+
+        data = {
+            'WsRestGetAttributeAssignmentsRequest': {
+                'actAsSubjectLookup': {'subjectId': self.auth.username},
+                'includeAssignmentsOnAssignments': 'T',
+            },
+        }
+        params = {}
+
+        if attributes is not None:
+            params['wsAttributeDefNameLookups'] = [
+                {'name': attr} for attr in attributes
+            ]
+        if stems is not None:
+            stems = [str_to_stem(stem).get_stem_lookup() for stem in stems]
+            params['wsOwnerStemLookups'] = stems
+            params['attributeAssignType'] = 'stem'
+        elif groups is not None:
+            groups = [str_to_group(group) for group in groups]
+            params['wsOwnerGroupLookups'] = [group.get_group_lookup() for group in groups]
+            params['attributeAssignType'] = 'group'
+
+        data['WsRestGetAttributeAssignmentsRequest'].update(params)
+
+        logger.debug(json.dumps(data, indent=2))
+        response = self.request(self._session.post, url, data)
+        logger.debug(json.dumps(response, indent=2))
+        return response
