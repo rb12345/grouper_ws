@@ -29,7 +29,7 @@ class Subject(object):
         elif self.subject_identifier is not None:
             lookup['subjectIdentifier'] = self.subject_identifier
         if self.source_id is not None:
-            lookup['subjectSourceId'] = self.subject_id
+            lookup['subjectSourceId'] = self.source_id
         return lookup
 
     def __str__(self):
