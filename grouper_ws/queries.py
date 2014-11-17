@@ -3,7 +3,6 @@
 import base64
 import json
 import requests
-from requests_negotiate import HTTPNegotiateAuth
 from urlparse import urljoin
 from urllib import quote
 
