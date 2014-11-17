@@ -2,7 +2,7 @@ import base64
 import json
 import requests
 import logging
-from requests_negotiate import HTTPNegotiateAuth
+from requests_kerberos import HTTPKerberosAuth
 from urlparse import urljoin
 from urllib import quote
 from queries import *
@@ -58,7 +58,7 @@ def str_to_group(group):
 
 
 class Grouper(object):
-    def __init__(self, host_name, base_url, auth=HTTPNegotiateAuth()):
+    def __init__(self, host_name, base_url, auth=HTTPKerberosAuth()):
         self.host_name = host_name
         self.base_url = urljoin('https://' + self.host_name, base_url)
         self.auth = auth
@@ -87,7 +87,6 @@ class Grouper(object):
 
         data = {
             'WsRestAddMemberRequest': {
-                'actAsSubjectLookup': {'subjectId': self.auth.username},
                 'replaceAllExisting': bool_to_tf_str(replace_existing),
                 'subjectLookups': members_list,
             },
@@ -102,7 +101,6 @@ class Grouper(object):
 
         data = {
             'WsRestFindGroupsRequest': {
-                'actAsSubjectLookup': {'subjectId': self.auth.username},
                 'wsQueryFilter': query.to_json_dict(),
             },
         }
@@ -117,7 +115,6 @@ class Grouper(object):
 
         data = {
             'WsRestFindGroupsRequest': {
-                'actAsSubjectLookup': {'subjectId': self.auth.username},
                 'wsGroupLookups': group_list,
                 'includeGroupDetail': 'T',
             },
@@ -134,7 +131,6 @@ class Grouper(object):
 
         data = {
             'WsRestHasMemberRequest': {
-                'actAsSubjectLookup': {'subjectId': self.auth.username},
                 'subjectLookups': members_list,
             },
         }
@@ -149,7 +145,6 @@ class Grouper(object):
 
         data = {
             'WsRestGetMembersRequest': {
-                'actAsSubjectLookup': {'subjectId': self.auth.username},
                 'subjectAttributeNames': subject_attributes,
                 'wsGroupLookups': group_list,
             },
@@ -167,7 +162,6 @@ class Grouper(object):
 
         data = {
             'WsRestGetMembershipsRequest': {
-                'actAsSubjectLookup': {'subjectId': self.auth.username},
                 'subjectAttributeNames': subject_attributes,
                 'memberFilter': 'All',
                 'includeGroupDetail': 'T',
@@ -193,7 +187,6 @@ class Grouper(object):
             raise Exception("member_filter must be in '{0}'".format(member_filter_values))
 
         params = {
-            'actAsSubjectLookup': {'subjectId': self.auth.username},
             'subjectAttributeNames': subject_attributes,
             'memberFilter': 'All',
             'includeGroupDetail': bool_to_tf_str(group_details),
@@ -215,7 +208,6 @@ class Grouper(object):
 
         data = {
             'WsRestGroupSaveRequest': {
-                'actAsSubjectLookup': {'subjectId': self.auth.username},
                 'includeGroupDetail': 'T',
                 'wsGroupToSaves': [g.to_json_dict() for g in groups],
             },
@@ -232,7 +224,6 @@ class Grouper(object):
 
         data = {
             'WsRestStemSaveRequest': {
-                'actAsSubjectLookup': {'subjectId': self.auth.username},
                 'wsStemToSaves': [s.to_json_dict() for s in stems],
             },
         }
@@ -248,7 +239,6 @@ class Grouper(object):
 
         data = {
             'WsRestGroupDeleteRequest': {
-                'actAsSubjectLookup': {'subjectId': self.auth.username},
                 'includeGroupDetail': 'T',
                 'wsGroupLookups': [g.get_group_lookup() for g in groups],
             },
@@ -265,7 +255,6 @@ class Grouper(object):
 
         data = {
             'WsRestStemDeleteRequest': {
-                'actAsSubjectLookup': {'subjectId': self.auth.username},
                 'wsStemLookups': [s.get_stem_lookup() for s in stems],
             },
         }
@@ -281,7 +270,6 @@ class Grouper(object):
         # Why is it that this is "Lite" only?
         data = {
             'WsRestGetGrouperPrivilegesLiteRequest': {
-                'actAsSubjectId': self.auth.username,
             },
         }
         params = {}
@@ -316,7 +304,6 @@ class Grouper(object):
 
         data = {
             'WsRestAssignGrouperPrivilegesRequest': {
-                'actAsSubjectLookup': {'subjectId': self.auth.username},
                 'includeGroupDetail': 'T',
                 'includeSubjectDetail': 'T',
                 'allowed': bool_to_tf_str(allowed),
@@ -362,7 +349,6 @@ class Grouper(object):
             raise Exception("Unknown attribute value assign operation")
         data = {
             'WsRestAssignAttributesRequest': {
-                'actAsSubjectLookup': {'subjectId': self.auth.username},
                 'attributeAssignOperation': attr_op,
                 'attributeAssignValueOperation': attr_value_op,
                 'wsAttributeDefNameLookups': [
@@ -396,7 +382,6 @@ class Grouper(object):
 
         data = {
             'WsRestGetAttributeAssignmentsRequest': {
-                'actAsSubjectLookup': {'subjectId': self.auth.username},
                 'includeAssignmentsOnAssignments': 'T',
             },
         }
