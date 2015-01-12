@@ -139,7 +139,8 @@ class Grouper(object):
         logger.debug(json.dumps(response, indent=2))
         return response
 
-    def get_members(self, groups, subject_attributes=DEFAULT_SUBJECT_ATTRIBUTES):
+    def get_members(self, groups, subject_attributes=DEFAULT_SUBJECT_ATTRIBUTES,
+        details=True, page_size=None, page=1):
         url = 'servicesRest/v2_1_005/groups'
         group_list = [{'groupName': group} for group in groups]
 
@@ -147,8 +148,14 @@ class Grouper(object):
             'WsRestGetMembersRequest': {
                 'subjectAttributeNames': subject_attributes,
                 'wsGroupLookups': group_list,
+                'includeSubjectDetail': bool_to_tf_str(details),
             },
         }
+        if page_size is not None:
+            if page < 1:
+                page = 1
+            data['WsRestGetMembersRequest']['pageSize'] = str(page_size)
+            data['WsRestGetMembersRequest']['pageNumber'] = str(page)
         logger.debug(json.dumps(data, indent=2))
         response = self.request(self._session.post, url, data)
         logger.debug(json.dumps(response, indent=2))
