@@ -5,7 +5,6 @@ import logging
 from requests_kerberos import HTTPKerberosAuth
 from urlparse import urljoin
 from urllib import quote
-from queries import *
 from groups import *
 from stems import *
 from subjects import *
@@ -78,6 +77,7 @@ class Grouper(object):
             data=json.dumps(data),
             auth=self.auth
         )
+        logger.debug(http_response)
         return http_response.json()
 
     def add_members(self, group, members, replace_existing=False):
@@ -102,6 +102,19 @@ class Grouper(object):
         data = {
             'WsRestFindGroupsRequest': {
                 'wsQueryFilter': query.to_json_dict(),
+            },
+        }
+        logger.debug(json.dumps(data, indent=2))
+        response = self.request(self._session.post, url, data)
+        logger.debug(json.dumps(response, indent=2))
+        return response
+
+    def find_stems(self, query):
+        url = 'servicesRest/v2_1_005/stems/'
+
+        data = {
+            'WsRestFindStemsRequest': {
+                'wsStemQueryFilter': query.to_json_dict(),
             },
         }
         logger.debug(json.dumps(data, indent=2))
