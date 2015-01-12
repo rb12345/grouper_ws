@@ -34,9 +34,10 @@ class QueryFilter(object):
 
 
 class FindByStemName(QueryFilter):
-    def __init__(self, stem_name='', *args, **kwargs):
+    def __init__(self, stem_name='', recursive=False, *args, **kwargs):
         super(FindByStemName, self).__init__(*args, **kwargs)
         self.stem_name = stem_name
+        self.recursive = recursive
 
     @property
     def query_type(self):
@@ -47,6 +48,8 @@ class FindByStemName(QueryFilter):
         query.update({
             'stemName': self.stem_name
         })
+        if self.recursive:
+            query['stemNameScope'] = 'ALL_IN_SUBTREE'
         return query
 
 
@@ -157,4 +160,21 @@ class Or(QueryFilter):
         return query
 
 
+class Minus(QueryFilter):
+    def __init__(self, query1, query2, *args, **kwargs):
+        super(Minus, self).__init__(*args, **kwargs)
+        self.query1 = query1
+        self.query2 = query2
+
+    @property
+    def query_type(self):
+        return MINUS
+
+    def to_json_dict(self):
+        query = super(Minus, self).to_json_dict()
+        query.update({
+            'queryFilter0': self.query1.to_json_dict(),
+            'queryFilter1': self.query2.to_json_dict(),
+        })
+        return query
 
