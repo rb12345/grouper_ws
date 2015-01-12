@@ -161,7 +161,7 @@ class Grouper(object):
         logger.debug(json.dumps(response, indent=2))
         return response
 
-    def get_group_memberships(self, group, member_filter='All', subject_attributes=DEFAULT_SUBJECT_ATTRIBUTES):
+    def get_group_memberships(self, group, member_filter='All', subject_attributes=DEFAULT_SUBJECT_ATTRIBUTES, details=True):
         url = 'servicesRest/v2_1_005/groups/{0}/memberships'.format(quote(group, safe=''))
         member_filter_values = ['All', 'Effective', 'Immediate', 'Composite', 'NonImmediate']
         if member_filter not in member_filter_values:
@@ -172,7 +172,7 @@ class Grouper(object):
                 'subjectAttributeNames': subject_attributes,
                 'memberFilter': 'All',
                 'includeGroupDetail': 'T',
-                'includeSubjectDetail': 'T',
+                'includeSubjectDetail': bool_to_tf_str(details),
             },
         }
         logger.debug(json.dumps(data, indent=2))
