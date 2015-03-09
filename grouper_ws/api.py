@@ -356,7 +356,7 @@ class Grouper(object):
         logger.debug(json.dumps(response, indent=2))
         return response
 
-    def assign_attributes(self, stems=None, groups=None, attributes={},
+    def assign_attributes(self, stems=None, groups=None, attribute_assigns=None, attributes={},
                           attr_op='assign_attr', attr_value_op='assign_value'):
         """
         Assign attribute/value pairs to a list of stems or groups.
@@ -370,12 +370,8 @@ class Grouper(object):
         data = {
             'WsRestAssignAttributesRequest': {
                 'attributeAssignOperation': attr_op,
-                'attributeAssignValueOperation': attr_value_op,
                 'wsAttributeDefNameLookups': [
                     {'name': attr} for attr in attributes
-                ],
-                'values': [
-                    {'valueSystem': attributes[attr]} for attr in attributes
                 ],
             },
         }
@@ -389,6 +385,21 @@ class Grouper(object):
             groups = [str_to_group(group) for group in groups]
             params['wsOwnerGroupLookups'] = [group.get_group_lookup() for group in groups]
             params['attributeAssignType'] = 'group'
+        elif attribute_assigns is not None:
+            attribute_assigns = [
+                {
+                    'uuid': assign_uuid
+                }
+                for assign_uuid in attribute_assigns
+            ]
+            params['wsOwnerAttributeAssignLookups'] = attribute_assigns
+            params['attributeAssignType'] = 'group_asgn'
+
+        if attr_op == 'assign_attr':
+            params['values'] = [
+                {'valueSystem': attributes[attr]} for attr in attributes
+            ]
+            params['attributeAssignValueOperation'] = attr_value_op
 
         data['WsRestAssignAttributesRequest'].update(params)
 
