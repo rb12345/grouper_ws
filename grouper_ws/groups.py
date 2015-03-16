@@ -3,6 +3,7 @@ import json
 from urlparse import urljoin
 from urllib import quote
 from datetime import datetime
+from subjects import Subject
 
 
 class Group(object):
@@ -57,6 +58,11 @@ class Group(object):
 
     def __str__(self):
         return "Group: %s" % self.group_name
+
+    def get_subject(self):
+        if self.uuid is not None:
+            return Subject(source_id="g:gsa", subject_id=self.uuid)
+        return Subject(source_id="g:gsa", subject_identifier=self.group_name)
 
 
 class CompositeGroup(Group):
