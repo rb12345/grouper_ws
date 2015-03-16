@@ -81,6 +81,9 @@ class Grouper(object):
         return http_response.json()
 
     def add_members(self, group, members, replace_existing=False):
+        if isinstance(group, Group):
+            group = group.group_name
+
         url = 'servicesRest/v2_1_005/groups/{0}/members'.format(quote(group, safe=''))
 
         members_list = [member_to_subject_lookup(member) for member in members]
@@ -138,6 +141,9 @@ class Grouper(object):
         return response
 
     def has_members(self, group, members):
+        if isinstance(group, Group):
+            group = group.group_name
+
         url = 'servicesRest/v2_1_005/groups/{0}/members'.format(quote(group, safe=''))
 
         members_list = [member_to_subject_lookup(member) for member in members]
@@ -175,6 +181,9 @@ class Grouper(object):
         return response
 
     def get_group_memberships(self, group, member_filter='All', subject_attributes=DEFAULT_SUBJECT_ATTRIBUTES, details=True):
+        if isinstance(group, Group):
+            group = group.group_name
+
         url = 'servicesRest/v2_1_005/groups/{0}/memberships'.format(quote(group, safe=''))
         member_filter_values = ['All', 'Effective', 'Immediate', 'Composite', 'NonImmediate']
         if member_filter not in member_filter_values:
