@@ -25,11 +25,54 @@ RULES_ATTRIBUTE_THEN_ARG1 = RULES_ATTRIBUTE_BASE + ":ruleThenEnumArg1"
 RULES_ATTRIBUTE_THEN_ARG2 = RULES_ATTRIBUTE_BASE + ":ruleThenEnumArg2"
 RULES_ATTRIBUTE_IS_VALID = RULES_ATTRIBUTE_BASE + ":ruleValid"
 
+RULES_CHECK_TYPES = [
+    "permissionDisabledDate",
+    "membershipDisabledDate",
+    "flattenedMembershipAddInFolder",
+    "flattenedMembershipRemoveInFolder",
+    "flattenedMembershipRemove",
+    "membershipRemove",
+    "membershipRemoveInFolder",
+    "groupCreate",
+    "stemCreate",
+    "membershipAdd",
+    "subjectAssignInStem",
+    "flattenedMembershipAdd",
+    "membershipAddInFolder",
+    "attributeDefCreate",
+    "permissionAssignToSubject",
+]
+
+RULES_IF = [
+    "noGroupInFolderHasImmediateEnabledMembership",
+    "nameMatchesSqlLikeString",
+    "thisGroupAndNotFolderHasImmediateEnabledMembership",
+    "thisPermissionDefHasAssignmentAndNotFolder",
+    "groupHasNoImmediateEnabledMembership",
+    "thisGroupHasImmediateEnabledMembership",
+    "thisGroupHasImmediateEnabledNoEndDateMembership",
+    "thisPermissionDefHasAssignment",
+    "thisPermissionDefHasNoEndDateAssignment",
+    "groupHasNoEnabledMembership",
+    "never",
+]
+
 
 logger = logging.getLogger(__name__)
 
 
 def define_rule(grouper, stem, act_as = Subject(source_id="g:isa", subject_id="GrouperSystem"), rule_config={}):
+    # Make sure rule check type is valid
+    check_type = rule_config.get(RULES_ATTRIBUTE_CHECK_TYPE, None)
+    if check_type not in RULES_CHECK_TYPES:
+        raise Exception("Invalid rule check type: {0}".format(check_type))
+
+    # Make sure rule if enum type is valid
+    if RULES_ATTRIBUTE_IF in rule_config:
+        if_enum = rule_config[RULES_ATTRIBUTE_IF]
+        if if_enum not in RULES_IF:
+            raise Exception("Invalid rule If enum: {0}".format(if_enum))
+
     r = grouper.assign_attributes(
         stems=[stem],
         attributes=[RULES_ATTRIBUTE_RULE],
