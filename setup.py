@@ -18,7 +18,7 @@ setup(
     description="Grouper Web Services library for Python",
     author='Systems Development and Support, IT Services, University of Oxford',
     author_email='sysdev@it.ox.ac.uk',
-    version='0.2.0',
+    version='0.2.1',
     license='BSD',
     url='https://github.com/rb12345/grouper_ws',
     long_description=open('README.rst').read(),
