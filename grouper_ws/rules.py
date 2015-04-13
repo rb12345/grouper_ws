@@ -157,6 +157,7 @@ def inherit_group_privileges(stem, subject, privileges=[], stem_scope="SUB", fil
     return rule_config
 
 def get_rules_for_stem(grouper, stem):
+    logger.debug("Querying rule assignments for stem {0}".format(stem))
     response = grouper.get_attribute_assignments(stems=[stem], attributes=[RULES_ATTRIBUTE_RULE])
 
     assignments = response['WsGetAttributeAssignmentsResults'].get('wsAttributeAssigns', [])
@@ -174,5 +175,9 @@ def get_rules_for_stem(grouper, stem):
         }
         if len(values) > 1:
             logger.warn("Multivalued rule attribute! {0}, {1}".format(attr['attributeDefNameName'], values))
-        rules[attr['ownerAttributeAssignId']][attr['attributeDefNameName']] = values.values()[0]
+        logger.debug("Rule attribute {0} values: {1}".format(attr['attributeDefNameName'], values))
+        if len(values) > 0:
+            rules[attr['ownerAttributeAssignId']][attr['attributeDefNameName']] = values.values()[0]
+        else:
+            rules[attr['ownerAttributeAssignId']][attr['attributeDefNameName']] = None
     return rules
