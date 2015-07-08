@@ -1,13 +1,21 @@
+from __future__ import absolute_import
+
 import base64
 import json
 import requests
 import logging
+
+try: # Py3
+    from urllib.parse import quote, urljoin
+except ImportError: # Py2
+    from urlparse import urljoin
+    from urllib import quote
+
 from requests_kerberos import HTTPKerberosAuth
-from urlparse import urljoin
-from urllib import quote
-from groups import *
-from stems import *
-from subjects import *
+
+from .groups import *
+from .stems import *
+from .subjects import *
 
 
 DEFAULT_SUBJECT_ATTRIBUTES = [

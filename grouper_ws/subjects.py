@@ -1,9 +1,14 @@
-import base64
-import json
-from urlparse import urljoin
-from urllib import quote
-from datetime import datetime
+from __future__ import absolute_import
 
+import base64
+from datetime import datetime
+import json
+
+try: # Py3
+    from urllib.parse import quote, urljoin
+except ImportError: # Py2
+    from urlparse import urljoin
+    from urllib import quote
 
 class Subject(object):
     def __init__(self, subject_id=None, source_id=None,

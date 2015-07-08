@@ -1,11 +1,15 @@
-#!/usr/bin/env python
+from __future__ import absolute_import
 
 import base64
 import json
-import requests
-from urlparse import urljoin
-from urllib import quote
 
+try: # Py3
+    from urllib.parse import quote, urljoin
+except ImportError: # Py2
+    from urlparse import urljoin
+    from urllib import quote
+
+import requests
 
 AND = 'AND'
 FIND_BY_APPROXIMATE_ATTRIBUTE = 'FIND_BY_APPROXIMATE_ATTRIBUTE'
