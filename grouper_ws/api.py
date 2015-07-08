@@ -11,7 +11,7 @@ except ImportError: # Py2
     from urlparse import urljoin
     from urllib import quote
 
-from requests_kerberos import HTTPKerberosAuth
+from requests_negotiate import HTTPNegotiateAuth
 
 from .groups import *
 from .stems import *
@@ -65,7 +65,7 @@ def str_to_group(group):
 
 
 class Grouper(object):
-    def __init__(self, host_name, base_url, auth=HTTPKerberosAuth()):
+    def __init__(self, host_name, base_url, auth=HTTPNegotiateAuth()):
         self.host_name = host_name
         self.base_url = urljoin('https://' + self.host_name, base_url)
         self.auth = auth
