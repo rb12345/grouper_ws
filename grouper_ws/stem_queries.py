@@ -1,11 +1,17 @@
-#!/usr/bin/env python
+from __future__ import absolute_import
 
 import base64
 import json
+
+try: # Py3
+    from urllib.parse import quote, urljoin
+except ImportError: # Py2
+    from urlparse import urljoin
+    from urllib import quote
+
 import requests
-from urlparse import urljoin
-from urllib import quote
-from queries import *
+
+from .queries import *
 
 
 AND = 'AND'

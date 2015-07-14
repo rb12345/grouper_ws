@@ -1,9 +1,14 @@
-import base64
-import json
-from urlparse import urljoin
-from urllib import quote
-from datetime import datetime
+from __future__ import absolute_import
 
+import base64
+from datetime import datetime
+import json
+
+try: # Py3
+    from urllib.parse import quote, urljoin
+except ImportError: # Py2
+    from urlparse import urljoin
+    from urllib import quote
 
 class Stem(object):
     def __init__(self, stem_name, display_name=None, uuid=None, *args, **kwargs):

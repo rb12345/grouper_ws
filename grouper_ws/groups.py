@@ -1,9 +1,16 @@
+from __future__ import absolute_import
+
 import base64
-import json
-from urlparse import urljoin
-from urllib import quote
 from datetime import datetime
-from subjects import Subject
+import json
+
+try: # Py3
+    from urllib.parse import quote, urljoin
+except ImportError: # Py2
+    from urlparse import urljoin
+    from urllib import quote
+
+from .subjects import Subject
 
 
 class Group(object):

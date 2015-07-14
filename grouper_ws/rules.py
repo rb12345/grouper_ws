@@ -1,11 +1,18 @@
+from __future__ import absolute_import
+
 import base64
+from datetime import datetime
 import json
 import logging
-from urlparse import urljoin
-from urllib import quote
-from datetime import datetime
-from stems import *
-from subjects import Subject
+
+try: # Py3
+    from urllib.parse import quote, urljoin
+except ImportError: # Py2
+    from urlparse import urljoin
+    from urllib import quote
+
+from .stems import *
+from .subjects import Subject
 
 
 RULES_ATTRIBUTE_BASE = "etc:attribute:rules"
