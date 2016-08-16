@@ -188,6 +188,22 @@ class Grouper(object):
         logger.debug(json.dumps(response, indent=2))
         return response
 
+    def get_subjects(self, subjects, subject_attributes=DEFAULT_SUBJECT_ATTRIBUTES):
+        url = 'servicesRest/v2_1_005/subjects'
+
+        subjects_list = [member_to_subject_lookup(subject) for subject in subjects]
+
+        data = {
+            'WsRestGetSubjectsRequest': {
+                'subjectAttributeNames': subject_attributes,
+                'wsSubjectLookups': subjects_list,
+            },
+        }
+        logger.debug(json.dumps(data, indent=2))
+        response = self.request(self._session.put, url, data)
+        logger.debug(json.dumps(response, indent=2))
+        return response
+
     def get_group_memberships(self, group, member_filter='All', subject_attributes=DEFAULT_SUBJECT_ATTRIBUTES, details=True):
         if isinstance(group, Group):
             group = group.group_name
