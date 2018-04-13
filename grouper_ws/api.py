@@ -1,9 +1,12 @@
 from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 
 import base64
 import json
 import requests
 import logging
+import six
 
 try: # Py3
     from urllib.parse import quote, urljoin
@@ -11,7 +14,10 @@ except ImportError: # Py2
     from urlparse import urljoin
     from urllib import quote
 
-from requests_negotiate import HTTPNegotiateAuth
+try:
+    from requests_negotiate import HTTPNegotiateAuth
+except ImportError:
+    from requests_kerberos import HTTPKerberosAuth as HTTPNegotiateAuth
 
 from .groups import *
 from .stems import *
@@ -38,7 +44,7 @@ def tf_str_to_bool(s):
     return False
 
 def member_to_subject_lookup(member):
-    if type(member) == str or type(member) == unicode:
+    if isinstance(member, six.text_type):
         return {
         'subjectId': member,
         }

@@ -1,4 +1,6 @@
 from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 
 import base64
 from datetime import datetime
@@ -134,7 +136,7 @@ def define_rule(grouper, stem, act_as = Subject(source_id="g:isa", subject_id="G
 
 def subject_to_string(subject):
     if not isinstance(subject, Subject):
-        raise "subject is not a Subject"
+        raise Exception("subject is not a Subject")
 
     if subject.subject_id:
         return "{0} :::: {1}".format(subject.source_id, subject.subject_id)
