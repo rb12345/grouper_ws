@@ -15,9 +15,14 @@ except ImportError: # Py2
     from urllib import quote
 
 try:
-    from requests_negotiate import HTTPNegotiateAuth
+    from requests_negotiate import HTTPNegotiateAuth as HTTPDefaultAuth
 except ImportError:
-    from requests_kerberos import HTTPKerberosAuth as HTTPNegotiateAuth
+    try:
+        from requests_kerberos import HTTPKerberosAuth as HTTPDefaultAuth
+    except ImportError:
+        def HTTPNegotiateAuthMock(*args, **kwargs):
+            return None
+        HTTPDefaultAuth = HTTPNegotiateAuthMock
 
 from .groups import *
 from .stems import *
@@ -71,7 +76,7 @@ def str_to_group(group):
 
 
 class Grouper(object):
-    def __init__(self, host_name, base_url, auth=HTTPNegotiateAuth()):
+    def __init__(self, host_name, base_url, auth=HTTPDefaultAuth()):
         self.host_name = host_name
         self.base_url = urljoin('https://' + self.host_name, base_url)
         self.auth = auth
