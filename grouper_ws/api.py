@@ -118,6 +118,24 @@ class Grouper(object):
         logger.debug(json.dumps(response, indent=2))
         return response
 
+    def delete_members(self, group, members):
+        if isinstance(group, Group):
+            group = group.group_name
+
+        url = 'servicesRest/v2_1_005/groups/{0}/members'.format(quote(group, safe=''))
+
+        members_list = [member_to_subject_lookup(member) for member in members]
+
+        data = {
+            'WsRestDeleteMemberRequest': {
+                'subjectLookups': members_list,
+            },
+        }
+        logger.debug(json.dumps(data, indent=2))
+        response = self.request(self._session.post, url, data)
+        logger.debug(json.dumps(response, indent=2))
+        return response
+
     def find_groups(self, query):
         url = 'servicesRest/v2_1_005/groups/'
 
