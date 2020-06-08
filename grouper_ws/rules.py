@@ -186,7 +186,7 @@ def get_rules_for_stem(grouper, stem):
             logger.warn("Multivalued rule attribute! {0}, {1}".format(attr['attributeDefNameName'], values))
         logger.debug("Rule attribute {0} values: {1}".format(attr['attributeDefNameName'], values))
         if len(values) > 0:
-            rules[attr['ownerAttributeAssignId']][attr['attributeDefNameName']] = values.values()[0]
+            rules[attr['ownerAttributeAssignId']][attr['attributeDefNameName']] = iter(values.values()).__next__()
         else:
             rules[attr['ownerAttributeAssignId']][attr['attributeDefNameName']] = None
     return rules
